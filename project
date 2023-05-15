@@ -1,0 +1,66 @@
+import tkinter as tk
+from tkinter import filedialog
+import pandas as pd
+import tabula
+
+# Función para seleccionar el archivo PDF
+def seleccionar_pdf():
+    # Abrir una ventana de diálogo para seleccionar el archivo PDF
+    ruta_pdf = filedialog.askopenfilename(filetypes=[("Archivo PDF", "*.pdf")])
+    
+    # Actualizar la entrada de texto con la ruta del archivo PDF seleccionado
+    entrada_ruta_pdf.delete(0, tk.END)
+    entrada_ruta_pdf.insert(0, ruta_pdf)
+
+# Función para convertir el archivo PDF en Excel
+def convertir_pdf_a_excel():
+    # Obtener la ruta del archivo PDF
+    ruta_pdf = entrada_ruta_pdf.get()
+    
+    # Especificar las páginas del PDF a convertir
+    paginas = "all"
+    
+    # Convertir el PDF a un DataFrame de pandas
+    df = tabula.read_pdf(ruta_pdf, pages=paginas)[0]
+    
+    # Obtener la ruta del archivo Excel a guardar
+    ruta_excel = entrada_ruta_excel.get()
+    
+    # Guardar el DataFrame como archivo Excel
+    df.to_excel(ruta_excel, index=False)
+    
+    # Mostrar un mensaje de confirmación
+    mensaje_confirmacion = tk.Label(ventana, text="El archivo ha sido convertido con éxito a Excel.")
+    mensaje_confirmacion.pack()
+
+# Crear una ventana
+ventana = tk.Tk()
+
+# Configurar el título de la ventana
+ventana.title("PDF a Excel")
+
+# Configurar las dimensiones de la ventana
+ventana.geometry("400x400")
+
+# Crear una etiqueta y una entrada de texto para la ruta del archivo PDF
+etiqueta_ruta_pdf = tk.Label(ventana, text="Archivo PDF:")
+etiqueta_ruta_pdf.pack()
+entrada_ruta_pdf = tk.Entry(ventana)
+entrada_ruta_pdf.pack()
+
+# Crear un botón para seleccionar el archivo PDF
+boton_seleccionar_pdf = tk.Button(ventana, text="Seleccionar PDF", command=seleccionar_pdf)
+boton_seleccionar_pdf.pack()
+
+# Crear una etiqueta y una entrada de texto para la ruta del archivo Excel
+etiqueta_ruta_excel = tk.Label(ventana, text="Archivo Excel:")
+etiqueta_ruta_excel.pack()
+entrada_ruta_excel = tk.Entry(ventana)
+entrada_ruta_excel.pack()
+
+# Crear un botón para convertir el PDF a Excel
+boton_convertir = tk.Button(ventana, text="Convertir a Excel", command=convertir_pdf_a_excel)
+boton_convertir.pack()
+
+# Iniciar el bucle principal de la interfaz gráfica
+ventana.mainloop()
